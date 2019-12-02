@@ -1,0 +1,13 @@
+.card{
+	padding: 10px;
+}
+.twoColGrid{
+	padding-bottom: 30px;
+	padding-top: 30px;
+}
+.bookList{
+	border: solid 1px #000;
+}
+.bookListItem{
+	margin: 15px;
+}

@@ -1,0 +1,14 @@
+[
+	{
+		"id": 1,
+		"category": "2 wheeler"
+	},
+	{
+		"id": 2,
+		"category": "3 wheeler"
+	},
+	{
+		"id": 3,
+		"category": "4 wheeler"
+	}  
+]
