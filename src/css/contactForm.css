@@ -1,0 +1,58 @@
+.entireForm {
+    overflow: hidden;
+    border:1px solid black;
+    border-radius: 50px;
+    width:50%;
+    margin:10px auto;
+}
+.contactUsForm{
+    margin: 20px;
+}
+.formHeading {
+    margin: 25px;
+}
+.fieldGroup {
+    margin: 20px;
+    height: 50px;
+    color: salmon;
+}
+.inputs {
+    float: right;
+    border-radius: 25px;
+    border: 2px solid #73AD21;
+    color: green;
+    padding: 20px;
+    width: 300px;
+    height: 35px;
+    margin-right: 15px;
+}
+.formLabels{
+    font-family: Verdana, Geneva, Tahoma, sans-serif, Times, serif, Courier, monospace;
+    margin-left: 15px;
+    color: #73AD21;
+}
+.submitBtn {
+    margin-bottom: 50px;
+    margin-top: 50px;
+    text-align: center;
+}
+.has-error {
+    float: right;
+    border-radius: 25px;
+    border: 2px solid red;
+    padding: 20px;
+    width: 300px;
+    height: 35px;
+    margin-right: 15px;
+}
+.errField {
+    float: right;
+    font-style: italic;
+    color: salmon;
+}
+.contactInfo {
+    font-family: Verdana, Geneva, Tahoma, sans-serif, Times, serif, Courier, monospace;
+    margin-left: 15px;
+    margin-right: 20px;
+    color: #73AD21;
+}

@@ -1,0 +1,12 @@
+.hamburger{
+	float: right;
+}
+.dropdown{
+	color: rgba(255,255,255,.5);
+	background-color: transparent;
+	border-color: transparent;
+
+}
+.dropdown : hover{	
+	color: rgba(255,255,255,.75);
+}

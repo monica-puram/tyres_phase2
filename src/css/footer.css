@@ -1,0 +1,15 @@
+.footer{
+	background-color: gray;
+    padding: 3rem 1rem;
+    width: 100%;
+    text-align:center;
+}
+.footerLogo{
+   margin: 10px;
+}
+.copyRight {
+    margin-top: 15px;
+}
+.copyRight a {
+    color: azure;
+}
