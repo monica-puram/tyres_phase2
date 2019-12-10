@@ -1,5 +1,4 @@
 import React from 'react';
-import data from '../json/products.json';
 import {Card, Button} from 'react-bootstrap';
 import Rating from 'react-rating';
 import ProductsPagination from './ProductsPagination';
