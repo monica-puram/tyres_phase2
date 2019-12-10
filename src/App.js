@@ -4,11 +4,12 @@ import Home from './Home';
 import About from './About';
 import Products from './Products';
 import ContactUs from './ContactUs';
+import { Container } from 'react-bootstrap';
 
 class App extends React.Component{
   render(){
     return(
-          <React.Fragment>
+        <React.Fragment>
             <StaticRouter basename = "LibraryProj">
               <Switch>              
                 <Route exact path = '/' component = {Home}/>
@@ -19,7 +20,7 @@ class App extends React.Component{
                 <Route path = '/Home' component = {Home}/>
               </Switch>
             </StaticRouter>
-          </React.Fragment>
+          </React.Fragment>          
       )
   }
 }
