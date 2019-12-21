@@ -1,7 +1,8 @@
 import React from 'react';
 import { Formik} from 'formik';
 import * as Yup from 'yup';
-import "../css/contactForm.css";
+//import "../css/contactForm.css";
+import {Form} from 'react-bootstrap';
 
 const validationSchema = Yup.object().shape({
   firstName: Yup.string().min(3, <p className="errField">Must have atleast 3 characters</p>).max(255, <p className="errField">Must be shorter than 255 characters</p>).required(<p className="errField">First name is mandatory</p>),
@@ -20,7 +21,7 @@ const ContactForm = () => (
       onSubmit={(values, { setSubmitting, resetForm }) => {
         setTimeout(() => {
           alert(JSON.stringify(values, null, 2));
-          setSubmitting(true);
+          setSubmitting(false);
         }, 400);
       }}
     >
@@ -34,25 +35,26 @@ const ContactForm = () => (
         isSubmitting
       }) => (
         <div className = "entireForm">
-        <form className="contactUsForm" onSubmit={handleSubmit}>
+        <Form className="contactUsForm" onSubmit={handleSubmit}>
           <h1 className = "formHeading">Please submit your enquires :</h1>
-          <div className = "fieldGroup"> 
-            <label htmlFor="firstName" className = "formLabels">FirstName</label>
-            <input
-             type="firstName"
+          <Form.Group className = "fieldGroup"> 
+            <Form.Label htmlFor="firstName" className = "formLabels">FirstName</Form.Label>
+            <Form.Control
+            
             name="firstName"
             onChange={handleChange}
-            onBlur={handleBlur}
+            
             value={values.firstName}
             placeholder="Enter FirstName"
             className={errors.firstName && touched.firstName ? "has-error" : "inputs"}
           />
+            
           {errors.firstName && touched.firstName && errors.firstName}
-          </div>
+          </Form.Group>
          
-          <div className = "fieldGroup">
-            <label htmlFor="lastName" className = "formLabels">LastName</label>
-            <input 
+          <Form.Group className = "fieldGroup">
+            <Form.Label htmlFor="lastName" className = "formLabels">LastName</Form.Label>
+            <Form.Control 
               type="lastName"
               name="lastName"
               onChange={handleChange}
@@ -61,12 +63,13 @@ const ContactForm = () => (
               placeholder="Enter LastName"
               className={errors.lastName && touched.lastName ? "has-error" : "inputs"}
             />
+              
             {errors.lastName && touched.lastName && errors.lastName}
-          </div>
+          </Form.Group>
 
-          <div className = "fieldGroup">
-            <label htmlFor="email" className = "formLabels">Email</label>
-            <input 
+          <Form.Group className = "fieldGroup">
+            <Form.Label htmlFor="email" className = "formLabels">Email</Form.Label>
+            <Form.Control 
               type="email"
               name="email"
               onChange={handleChange}
@@ -76,11 +79,11 @@ const ContactForm = () => (
               className={errors.email && touched.email ? "has-error" : "inputs"}
             />
             {errors.email && touched.email && errors.email}
-          </div>
+          </Form.Group>
 
-          <div className = "fieldGroup">
-            <label htmlFor="contact" className = "contactInfo">Contact#</label>
-            <input 
+          <Form.Group className = "fieldGroup">
+            <Form.Label htmlFor="contact" className = "contactInfo">Contact#</Form.Label>
+            <Form.Control 
               type="contact"
               name="contact"
               onChange={handleChange}
@@ -90,11 +93,11 @@ const ContactForm = () => (
               className={errors.contact && touched.contact ? "has-error" : "inputs"}
             />
             {errors.contact && touched.contact && errors.contact}
-          </div>
+          </Form.Group>
 
-          <div className = "fieldGroup">
-            <label htmlFor="country" className = "formLabels">Country</label>
-            <input 
+          <Form.Group className = "fieldGroup">
+            <Form.Label htmlFor="country" className = "formLabels">Country</Form.Label>
+            <Form.Control 
               type="country"
               name="country"
               onChange={handleChange}
@@ -104,21 +107,21 @@ const ContactForm = () => (
               className={errors.country && touched.country ? "has-error" : "inputs"}
             />
             {errors.country && touched.country && errors.country}
-          </div>
+          </Form.Group>
 
-          <div className = "fieldGroup">
-            <label htmlFor="comments" className = "formLabels">Comments</label>
-            <textarea 
-              type="text-area"
+          <Form.Group className = "fieldGroup">
+            <Form.Label htmlFor="comments" className = "formLabels">Comments</Form.Label>
+            <Form.Control 
+              as = "textarea"
               name="comments"
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.comments}
               placeholder="Enter your comments here"
-              className={errors.comments && touched.comments ? "has-error" : "inputs"}>
-              </textarea>
+              className={errors.comments && touched.comments ? "has-error" : "inputs"}/>
+              
             {errors.comments && touched.comments && errors.comments}
-          </div>
+          </Form.Group>
 
          
         <div className= "submitBtn">
@@ -127,7 +130,7 @@ const ContactForm = () => (
           </button>
         </div>
           
-        </form>
+        </Form>
         
         </div>
       )}
