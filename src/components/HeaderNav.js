@@ -43,6 +43,7 @@ class HeaderNav extends React.Component{
 								</Dropdown>
 								<Nav.Link href="/About">About</Nav.Link>
 								<Nav.Link href="/ContactUs">Contact Us</Nav.Link>
+								<Nav.Link href = "/login">Login/Sign Up</Nav.Link>
 							</Nav>
 							</Navbar.Collapse>
 						</Col>

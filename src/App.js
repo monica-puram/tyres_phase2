@@ -4,7 +4,8 @@ import Home from './Home';
 import About from './About';
 import Products from './Products';
 import ContactUs from './ContactUs';
-import { Container } from 'react-bootstrap';
+import Login from './Login';
+import SignUp from './SignUp';
 
 class App extends React.Component{
   render(){
@@ -17,6 +18,8 @@ class App extends React.Component{
                 <Route exact path = '/products' component = {Products}/>
                 <Route path = '/products/:category' component = {Products}/>
                 <Route path = '/contactUs' component = {ContactUs}/>
+                <Route path = '/login' component = {Login}/>
+                <Route path = '/signup' component = {SignUp}/>
                 <Route path = '/Home' component = {Home}/>
               </Switch>
             </StaticRouter>
