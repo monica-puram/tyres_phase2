@@ -6,7 +6,55 @@ import axios from 'axios';
 //import "../css/contactForm.css";
 
 class SignUpForm extends React.Component{
-    
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			zipCode: "",
+			userCity: "",
+			userState: ""
+		}
+		this.handleZipCode = this.handleZipCode.bind(this);
+	}
+
+    handleZipCode(e) {
+		console.log("Zip code sent : ",e.target);
+		this.setState({
+			[e.target.name] : e.target.value
+		})
+		if(e.target.value.length === 5) {
+			axios.get('http://localhost:3001/populateFields?zip='+e.target.value)
+			.then(response=>{
+				console.log(response);
+				console.log(response.data.city);
+				document.getElementById("userState").lastChild.value = response.data.state_name;
+			  document.getElementById("userCity").value = response.data.city;
+				  //document.getElementsByClassName("userZipCode").value = response.data.zip;
+			})
+			.catch(error =>{
+				console.log(error);
+			})
+		}
+	}
+
+	componentDidMount() {
+		axios.get('http://localhost:3001/populateStates')
+		.then(response => {
+			console.log("StatesList from Server: ",response.data);
+			  var stateList = response.data.map(a => a.state_name);
+			 	stateList.forEach(state => {
+					var element = document.getElementById("userState").lastChild;
+					var optionEle = document.createElement("option");
+					optionEle.text = state;
+					element.add(optionEle);
+				});
+			  
+		})
+		.catch(error =>{
+			console.log(error);
+		})
+	}
+
     render(){
 		
 		let validationSchema = Yup.object().shape({
@@ -15,23 +63,24 @@ class SignUpForm extends React.Component{
 			email: Yup.string().email(<p className="errField">Must be a valid email address</p>).max(255, <p className="errField">Must be shorter than 255 characters</p>).required(<p className="errField">Email address is mandatory</p>),
 			password: Yup.string().min(8, <p className="errField">Length of password must be minimum 8</p>).max(15,<p className="errField">Password cannot be more than 15 characters</p>).required(<p className="errField">Password is mandatory</p>),
 			confirmPassword: Yup.string().min(8, <p className="errField">Length of password must be minimum 8</p>).max(15,<p className="errField">Password cannot be more than 15 characters</p>).required(<p className="errField">Password is mandatory</p>)
-			.test('passwords-match', 'Passwords must match ya fool', function(value) {
+			.test('passwords-match', 'Passwords must match', function(value) {
 				return this.parent.password === value;
 			  }),
 			
 			city: Yup.string().required(<p className="errField">City is mandatory</p>),
-			zipCode:Yup.string().matches(/^[0-9]*$/).length(6, <p>Zip Code must be 6 digits</p>)
+			zipCode:Yup.string().matches(/^[0-9]*$/).length(5, <p>Zip Code must be 5 digits</p>)
 		  })
+
+		
         return(
 			<Formik
-				initialValues={{ firstName: '', lastName:'', email: '',password: '',confirmPassword:'', address1: '',address2:'',city:'',state:'',  zipCode:''}}
+				initialValues={{ firstName: '', lastName:'', email: '', password: '', confirmPassword:'', address1: '', address2:'', city:'', state:'', zipCode:''}}
 				validationSchema={validationSchema}
 				onSubmit={(values, { setSubmitting, resetForm }) => {
 					setTimeout(() => {
 					
 					setSubmitting(false);
 					console.log(values);
-					var data = values;
 					//const data = new FormData();
 					//data.append('myValues', (values));
 					axios.post('http://localhost:3001/newUser',values)
@@ -148,7 +197,7 @@ class SignUpForm extends React.Component{
 					  <Form.Row>
 					    <Form.Group as={Col} controlId="formGridCity">
 					      <Form.Label>City</Form.Label>
-					      <Form.Control
+					      <Form.Control id="userCity"
 							type = "text"
 							placeholder="City"
 							value = {values.city}
@@ -158,7 +207,7 @@ class SignUpForm extends React.Component{
 							{errors.city && touched.city && errors.city}
 					    </Form.Group>
 
-					    <Form.Group as={Col} controlId="formGridState">
+					    <Form.Group as={Col} controlId="formGridState" id="userState">
 					      <Form.Label>State</Form.Label>
 						  <Form.Control 
 						   as="select"
@@ -168,21 +217,19 @@ class SignUpForm extends React.Component{
 							onBlur = {handleBlur}
 							
 						   >
-					        <option></option>
-					        <option>Indiana</option>
-					        <option>Texas</option>
-					        <option>California</option>
+							<option></option>
+					        
 					      </Form.Control>
 						  {errors.state && touched.state && errors.state}
 					    </Form.Group>
 
 					    <Form.Group as={Col} controlId="formGridZip">
 					      <Form.Label>Zip</Form.Label>
-					      <Form.Control 
+					      <Form.Control className="userZipCode"
 						  type = "text"
 						  name = "zipCode"
-						  value = {values.zipCode}
-						  onChange = {handleChange}
+						  value = {this.state.zipCode}
+						  onChange = {this.handleZipCode}
 						  onBlur = {handleBlur} />
 						  {errors.zipCode && touched.zipCode && errors.zipCode}
 					    </Form.Group>
