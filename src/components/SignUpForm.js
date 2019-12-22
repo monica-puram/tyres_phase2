@@ -1,9 +1,8 @@
 import React from 'react';
-import {Form, Button,Col} from 'react-bootstrap';
+import {Form, Button,Col, Alert} from 'react-bootstrap';
 import { Formik} from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-//import "../css/contactForm.css";
 
 class SignUpForm extends React.Component{
     
@@ -36,12 +35,17 @@ class SignUpForm extends React.Component{
 					//data.append('myValues', (values));
 					axios.post('http://localhost:3001/newUser',values)
 						.then(response=>{
-							console.log(response);
+							if(response.data ==="Duplicate emails"){
+								alert("This email is already registered. Please use another email address.")
+							}
+							else if(response.data ==="Successfully inserted!"){
+								alert("Registered successfully!");
+							}
 						})
 						.catch(error =>{
 							console.log(error);
 						})
-					}, 400);
+					}, 500);
 				}}
 				>
 				{({
