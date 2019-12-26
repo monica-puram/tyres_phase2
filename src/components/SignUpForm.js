@@ -15,6 +15,7 @@ class SignUpForm extends React.Component{
 			userState: ""
 		}
 		this.handleZipCode = this.handleZipCode.bind(this);
+		this.handleFieldChanges = this.handleFieldChanges.bind(this);
 	}
 
     handleZipCode(e) {
@@ -25,11 +26,25 @@ class SignUpForm extends React.Component{
 		if(e.target.value.length === 5) {
 			axios.get('http://localhost:3001/populateFields?zip='+e.target.value)
 			.then(response=>{
-				console.log(response);
-				console.log(response.data.city);
-				document.getElementById("userState").lastChild.value = response.data.state_name;
-			  document.getElementById("userCity").value = response.data.city;
-				  //document.getElementsByClassName("userZipCode").value = response.data.zip;
+			console.log(response);
+				
+			    //document.getElementsByClassName("userState").state.value = response.data.state_name;
+			 //document.getElementsByClassName("userCity").city.value = response.data.city;
+				//document.getElementsByClassName("userZipCode").zipCode.value = response.data.zip;
+				if(Object.entries(response.data).length !== 0 && response.data.constructor === Object) {
+					this.setState({
+						userCity: response.data.city,
+						userState: response.data.state_name
+					})
+					
+					console.log("City and State : ", this.state.userCity+", "+this.state.userState);
+				} else {
+					alert("Not a valid zipcode.");
+					this.setState({
+						userCity: "",
+						userState: ""
+					})
+				}
 			})
 			.catch(error =>{
 				console.log(error);
@@ -37,17 +52,27 @@ class SignUpForm extends React.Component{
 		}
 	}
 
+	handleFieldChanges(e) {
+		this.setState({
+			[e.target.name] : e.target.value
+		})
+	}
+
 	componentDidMount() {
 		axios.get('http://localhost:3001/populateStates')
 		.then(response => {
-			console.log("StatesList from Server: ",response.data);
-			  var stateList = response.data.map(a => a.state_name);
-			 	stateList.forEach(state => {
-					var element = document.getElementById("userState").lastChild;
-					var optionEle = document.createElement("option");
-					optionEle.text = state;
-					element.add(optionEle);
-				});
+			if(response.data != null || response.data != undefined) {
+				console.log("StatesList from Server: ",response.data);
+				var stateList = response.data.map(a => a.state_name);
+				   stateList.forEach(state => {
+					  var element = document.getElementsByClassName("userState").userState;
+					  var optionEle = document.createElement("option");
+					  optionEle.text = state;
+					  element.add(optionEle);
+				  });
+			} else {
+				alert("Not a valid zip code. Reponse from server : "+response);
+			}
 			  
 		})
 		.catch(error =>{
@@ -67,14 +92,14 @@ class SignUpForm extends React.Component{
 				return this.parent.password === value;
 			  }),
 			
-			city: Yup.string().required(<p className="errField">City is mandatory</p>),
+			userCity: Yup.string().required(<p className="errField">City is mandatory</p>),
 			zipCode:Yup.string().matches(/^[0-9]*$/).length(5, <p>Zip Code must be 5 digits</p>)
 		  })
 
-		
+		  
         return(
 			<Formik
-				initialValues={{ firstName: '', lastName:'', email: '', password: '', confirmPassword:'', address1: '', address2:'', city:'', state:'', zipCode:''}}
+				initialValues={{ firstName: '', lastName:'', email: '', password: '', confirmPassword:'', address1: '', address2:'', userCity:'', userState:'', zipCode:''}}
 				validationSchema={validationSchema}
 				onSubmit={(values, { setSubmitting, resetForm }) => {
 					setTimeout(() => {
@@ -103,6 +128,9 @@ class SignUpForm extends React.Component{
 					isSubmitting
 				}) => (
             <Form onSubmit = {handleSubmit}>
+					<div style={{"display":"none"}}>{values.userCity = this.state.userCity}
+					{values.userState = this.state.userState}</div>
+					
 				  	<Form.Row>
 					    <Form.Group as={Col} sm ="12" md = "12" lg = "6" xl = "6"  controlId="firstName">
 					      <Form.Label>First Name</Form.Label>
@@ -197,30 +225,44 @@ class SignUpForm extends React.Component{
 					  <Form.Row>
 					    <Form.Group as={Col} controlId="formGridCity">
 					      <Form.Label>City</Form.Label>
-					      <Form.Control id="userCity"
+					      <Form.Control className="userCity"
 							type = "text"
 							placeholder="City"
-							value = {values.city}
-							name = "city"
-							onChange = {handleChange}
+							value = {document.querySelector("#formGridCity") != null ? (
+								(document.querySelector("#formGridCity").value == "" || document.querySelector("#formGridCity").value == null) ?  (
+									document.querySelector("#formGridCity").parentElement.nextElementSibling.nextElementSibling.lastChild.value == "" ? 
+									values.userCity: this.state.userCity) : this.state.userCity) : 
+								values.userCity}
+							
+							name = "userCity"
+							onChange = {(e) => {
+								handleChange(e);
+								this.handleFieldChanges(e);
+							  }}
 							onBlur = {handleBlur} />
-							{errors.city && touched.city && errors.city}
+							{errors.userCity && touched.userCity && errors.userCity}
 					    </Form.Group>
 
-					    <Form.Group as={Col} controlId="formGridState" id="userState">
+					    <Form.Group as={Col} controlId="formGridState">
 					      <Form.Label>State</Form.Label>
-						  <Form.Control 
+						  <Form.Control className="userState"
 						   as="select"
-						   value = {values.state}
-							name = "state"
-							onChange = {handleChange}
+						   value = {document.querySelector("#formGridState") != null ? (
+							(document.querySelector("#formGridState").value == "" || document.querySelector("#formGridState").value == null) ?  (
+								document.querySelector("#formGridState").parentElement.nextElementSibling.lastChild.value == "" ? 
+								values.userState : this.state.userState) : this.state.userState) : 
+							values.userState}
+						    name = "userState"
+							onChange = {(e) => {
+								handleChange(e);
+								this.handleFieldChanges(e);
+							  }}
 							onBlur = {handleBlur}
-							
 						   >
 							<option></option>
 					        
 					      </Form.Control>
-						  {errors.state && touched.state && errors.state}
+						  {errors.userState && touched.userState && errors.userState}
 					    </Form.Group>
 
 					    <Form.Group as={Col} controlId="formGridZip">
@@ -229,7 +271,10 @@ class SignUpForm extends React.Component{
 						  type = "text"
 						  name = "zipCode"
 						  value = {this.state.zipCode}
-						  onChange = {this.handleZipCode}
+						  onChange = {(e) => {
+							handleChange(e);
+							this.handleZipCode(e);
+						  }}
 						  onBlur = {handleBlur} />
 						  {errors.zipCode && touched.zipCode && errors.zipCode}
 					    </Form.Group>
