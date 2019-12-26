@@ -30,8 +30,9 @@ app.post('/newUser', function (req, res) {
          
   });
 
-  var obj = {};
+ 
   app.get('/populateFields', function (req, res) {
+    var obj = {};
     MongoClient.connect('mongodb://localhost:27017/', function (err, db) {
         if (err) throw err;
         var dbo = db.db("locations");
@@ -40,10 +41,12 @@ app.post('/newUser', function (req, res) {
         //console.log(typeof req.body);
         dbo.collection("us").findOne({"zip": req.query.zip}, function(err, res) {
             if (err) throw err;
-            obj.state_name = res.state_name;
-            obj.city = res.city;
-            obj.county_name = res.county_name;
-            
+            if(res != null) {
+              obj.state_name = res.state_name;
+              obj.city = res.city;
+              obj.county_name = res.county_name;
+            } 
+                        
             console.log("Result : ", obj);
             sendResponse(obj);
             db.close();
