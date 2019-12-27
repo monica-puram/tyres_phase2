@@ -15,8 +15,13 @@ class SignUpForm extends React.Component{
 		this.state = {
 			displayAlert: false,
 			success : false,
-			modalShow: false
+			modalShow: false,
+			zipCode: "",
+			userCity: "",
+			userState: ""
 		}
+		this.handleZipCode = this.handleZipCode.bind(this);
+		this.handleFieldChanges = this.handleFieldChanges.bind(this);
 		this.toggleModal = this.toggleModal.bind(this);
 	}
   
@@ -29,17 +34,6 @@ class SignUpForm extends React.Component{
 		   modalShow: false
 		})
 	 };
-
-	constructor(props) {
-		super(props);
-		this.state = {
-			zipCode: "",
-			userCity: "",
-			userState: ""
-		}
-		this.handleZipCode = this.handleZipCode.bind(this);
-		this.handleFieldChanges = this.handleFieldChanges.bind(this);
-	}
 
     handleZipCode(e) {
 		console.log("Zip code sent : ",e.target);
