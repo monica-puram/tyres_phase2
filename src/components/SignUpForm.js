@@ -9,6 +9,7 @@ import SignUpAlert from './SignUpAlert';
 import '../css/signUp.css';
 
 class SignUpForm extends React.Component{
+
 	constructor(props){
 		super(props);
 		this.state = {
@@ -17,8 +18,8 @@ class SignUpForm extends React.Component{
 			modalShow: false
 		}
 		this.toggleModal = this.toggleModal.bind(this);
-		
 	}
+  
 	toggleModal = () => {
 		var modalRoot = document.getElementById('modal-root');
 		var child = document.querySelector("#modal-root > div");
@@ -28,7 +29,81 @@ class SignUpForm extends React.Component{
 		   modalShow: false
 		})
 	 };
-    
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			zipCode: "",
+			userCity: "",
+			userState: ""
+		}
+		this.handleZipCode = this.handleZipCode.bind(this);
+		this.handleFieldChanges = this.handleFieldChanges.bind(this);
+	}
+
+    handleZipCode(e) {
+		console.log("Zip code sent : ",e.target);
+		this.setState({
+			[e.target.name] : e.target.value
+		})
+		if(e.target.value.length === 5) {
+			axios.get('http://localhost:3001/populateFields?zip='+e.target.value)
+			.then(response=>{
+			console.log(response);
+				
+			    //document.getElementsByClassName("userState").state.value = response.data.state_name;
+			 //document.getElementsByClassName("userCity").city.value = response.data.city;
+				//document.getElementsByClassName("userZipCode").zipCode.value = response.data.zip;
+				if(Object.entries(response.data).length !== 0 && response.data.constructor === Object) {
+					this.setState({
+						userCity: response.data.city,
+						userState: response.data.state_name
+					})
+					
+					console.log("City and State : ", this.state.userCity+", "+this.state.userState);
+				} else {
+					alert("Not a valid zipcode.");
+					this.setState({
+						userCity: "",
+						userState: ""
+					})
+				}
+			})
+			.catch(error =>{
+				console.log(error);
+			})
+		}
+	}
+
+	handleFieldChanges(e) {
+		this.setState({
+			[e.target.name] : e.target.value
+		})
+	}
+
+	componentDidMount() {
+		axios.get('http://localhost:3001/populateStates')
+		.then(response => {
+			if(response.data != null || response.data != undefined) {
+				console.log("StatesList from Server: ",response.data);
+				var stateList = response.data.map(a => a.state_name);
+				   stateList.forEach(state => {
+					  var element = document.getElementsByClassName("userState").userState;
+					  var optionEle = document.createElement("option");
+					  optionEle.text = state;
+					  element.add(optionEle);
+				  });
+			} else {
+				alert("Not a valid zip code. Reponse from server : "+response);
+			}
+			  
+		})
+		.catch(error =>{
+			console.log(error);
+		})
+	}
+
+
     render(){
 		
 		let validationSchema = Yup.object().shape({
@@ -37,16 +112,15 @@ class SignUpForm extends React.Component{
 			email: Yup.string().email(<p className="errField">Must be a valid email address</p>).max(255, <p className="errField">Must be shorter than 255 characters</p>).required(<p className="errField">Email address is mandatory</p>),
 			password: Yup.string().min(8, <p className="errField">Length of password must be minimum 8</p>).max(15,<p className="errField">Password cannot be more than 15 characters</p>).required(<p className="errField">Password is mandatory</p>),
 			confirmPassword: Yup.string().min(8, <p className="errField">Length of password must be minimum 8</p>).max(15,<p className="errField">Password cannot be more than 15 characters</p>).required(<p className="errField">Password is mandatory</p>)
-			.test('passwords-match', 'Passwords must match ya fool', function(value) {
+			.test('passwords-match', 'Passwords must match', function(value) {
 				return this.parent.password === value;
 			  }),
 			
-			city: Yup.string().required(<p className="errField">City is mandatory</p>),
-			zipCode:Yup.string().matches(/^[0-9]*$/).length(6, <p>Zip Code must be 6 digits</p>)
+			userCity: Yup.string().required(<p className="errField">City is mandatory</p>),
+			zipCode:Yup.string().matches(/^[0-9]*$/).length(5, <p>Zip Code must be 5 digits</p>)
 		  })
-		  
-		  
-        return(
+
+      return(
 			<div>
 				{
 					(this.state.displayAlert && this.state.success && this.state.modalShow) ?
@@ -101,7 +175,7 @@ class SignUpForm extends React.Component{
 					: null
 				}
 			<Formik
-				initialValues={{ firstName: '', lastName:'', email: '',password: '',confirmPassword:'', address1: '',address2:'',city:'',state:'',  zipCode:''}}
+				initialValues={{ firstName: '', lastName:'', email: '', password: '', confirmPassword:'', address1: '', address2:'', userCity:'', userState:'', zipCode:''}}
 				validationSchema={validationSchema}
 				onSubmit={(values, { setSubmitting, resetForm }) => {
 					setTimeout(() => {
@@ -145,6 +219,9 @@ class SignUpForm extends React.Component{
 					isSubmitting
 				}) => (
             <Form onSubmit = {handleSubmit}>
+					<div style={{"display":"none"}}>{values.userCity = this.state.userCity}
+					{values.userState = this.state.userState}</div>
+					
 				  	<Form.Row>
 					    <Form.Group as={Col} sm ="12" md = "12" lg = "6" xl = "6"  controlId="firstName">
 					      <Form.Label>First Name</Form.Label>
@@ -239,41 +316,56 @@ class SignUpForm extends React.Component{
 					  <Form.Row>
 					    <Form.Group as={Col} controlId="formGridCity">
 					      <Form.Label>City</Form.Label>
-					      <Form.Control
+					      <Form.Control className="userCity"
 							type = "text"
 							placeholder="City"
-							value = {values.city}
-							name = "city"
-							onChange = {handleChange}
+							value = {document.querySelector("#formGridCity") != null ? (
+								(document.querySelector("#formGridCity").value == "" || document.querySelector("#formGridCity").value == null) ?  (
+									document.querySelector("#formGridCity").parentElement.nextElementSibling.nextElementSibling.lastChild.value == "" ? 
+									values.userCity: this.state.userCity) : this.state.userCity) : 
+								values.userCity}
+							
+							name = "userCity"
+							onChange = {(e) => {
+								handleChange(e);
+								this.handleFieldChanges(e);
+							  }}
 							onBlur = {handleBlur} />
-							{errors.city && touched.city && errors.city}
+							{errors.userCity && touched.userCity && errors.userCity}
 					    </Form.Group>
 
 					    <Form.Group as={Col} controlId="formGridState">
 					      <Form.Label>State</Form.Label>
-						  <Form.Control 
+						  <Form.Control className="userState"
 						   as="select"
-						   value = {values.state}
-							name = "state"
-							onChange = {handleChange}
+						   value = {document.querySelector("#formGridState") != null ? (
+							(document.querySelector("#formGridState").value == "" || document.querySelector("#formGridState").value == null) ?  (
+								document.querySelector("#formGridState").parentElement.nextElementSibling.lastChild.value == "" ? 
+								values.userState : this.state.userState) : this.state.userState) : 
+							values.userState}
+						    name = "userState"
+							onChange = {(e) => {
+								handleChange(e);
+								this.handleFieldChanges(e);
+							  }}
 							onBlur = {handleBlur}
-							
 						   >
-					        <option></option>
-					        <option>Indiana</option>
-					        <option>Texas</option>
-					        <option>California</option>
+							<option></option>
+					        
 					      </Form.Control>
-						  {errors.state && touched.state && errors.state}
+						  {errors.userState && touched.userState && errors.userState}
 					    </Form.Group>
 
 					    <Form.Group as={Col} controlId="formGridZip">
 					      <Form.Label>Zip</Form.Label>
-					      <Form.Control 
+					      <Form.Control className="userZipCode"
 						  type = "text"
 						  name = "zipCode"
-						  value = {values.zipCode}
-						  onChange = {handleChange}
+						  value = {this.state.zipCode}
+						  onChange = {(e) => {
+							handleChange(e);
+							this.handleZipCode(e);
+						  }}
 						  onBlur = {handleBlur} />
 						  {errors.zipCode && touched.zipCode && errors.zipCode}
 					    </Form.Group>
