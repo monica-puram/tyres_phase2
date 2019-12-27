@@ -1,6 +1,10 @@
 import React from 'react';
 import HistoryOfUs from './HistoryOfUs';
 import Testimonials from './Testimonials';
+import SignUpAlert from './SignUpAlert';
+import { Button } from 'react-bootstrap';
+import  ModalComponent from './ModalComponent';
+
 class AboutUsBody extends React.Component {
     constructor(props) {
         super(props);
@@ -22,6 +26,7 @@ class AboutUsBody extends React.Component {
             <div style={{marginTop: "50px"}}>
                 <HistoryOfUs />
                 <Testimonials testimonials = {this.state.testimonials}/>
+                  
             </div>
         )
     }

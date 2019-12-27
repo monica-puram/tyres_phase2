@@ -1,11 +1,34 @@
 import React from 'react';
-import {Form, Button,Col} from 'react-bootstrap';
+import {Form, Button,Col, Modal} from 'react-bootstrap';
 import { Formik} from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-//import "../css/contactForm.css";
+//import SignUpAlert from './SignUpAlert';
+import ModalComponent from './ModalComponent';
+import SignUpAlert from './SignUpAlert';
+import '../css/signUp.css';
 
 class SignUpForm extends React.Component{
+
+	constructor(props){
+		super(props);
+		this.state = {
+			displayAlert: false,
+			success : false,
+			modalShow: false
+		}
+		this.toggleModal = this.toggleModal.bind(this);
+	}
+  
+	toggleModal = () => {
+		var modalRoot = document.getElementById('modal-root');
+		var child = document.querySelector("#modal-root > div");
+		modalRoot.removeChild(child);
+		//document.getElementById('modal-root').removeChild(document.getElementsByClassName('modalChild'));
+		this.setState({
+		   modalShow: false
+		})
+	 };
 
 	constructor(props) {
 		super(props);
@@ -80,6 +103,7 @@ class SignUpForm extends React.Component{
 		})
 	}
 
+
     render(){
 		
 		let validationSchema = Yup.object().shape({
@@ -96,8 +120,60 @@ class SignUpForm extends React.Component{
 			zipCode:Yup.string().matches(/^[0-9]*$/).length(5, <p>Zip Code must be 5 digits</p>)
 		  })
 
-		  
-        return(
+      return(
+			<div>
+				{
+					(this.state.displayAlert && this.state.success && this.state.modalShow) ?
+						
+							<ModalComponent modalShow = {this.state.modalShow} as = {Modal}
+								
+								show = {this.state.modalShow}
+								variant = 'success'
+								aria-labelledby="contained-modal-title-vcenter"
+								centered
+							>
+								<div className = 'modalComponent'>
+								<Modal.Header style = {{backgroundColor: 'darkseagreen'}}>
+								   Success!
+								</Modal.Header>
+								<Modal.Body>
+								
+								<p>
+									Registered successfully
+								</p>
+								</Modal.Body>
+								<Modal.Footer>
+									<Button onClick={this.toggleModal}>Close</Button>
+								</Modal.Footer>
+								</div>
+							</ModalComponent>
+						
+					
+					:(this.state.displayAlert && !this.state.success && this.state.modalShow) ?
+					<ModalComponent modalShow = {this.state.modalShow} as = {Modal}
+								className = 'modalComponent'
+								show = {this.state.modalShow}
+								variant = "danger"
+								aria-labelledby="contained-modal-title-vcenter"
+								centered
+							>
+								<div className = 'modalComponent'>
+								<Modal.Header style = {{backgroundColor: "indianred"}}>
+								   Failed!
+								</Modal.Header>
+								<Modal.Body>
+								
+								<p>
+									This email is already registered. Please use another email address!
+								</p>
+								</Modal.Body>
+								<Modal.Footer>
+									<Button onClick={this.toggleModal}>Close</Button>
+								</Modal.Footer>
+								</div>
+							</ModalComponent>
+					: null
+				}
 			<Formik
 				initialValues={{ firstName: '', lastName:'', email: '', password: '', confirmPassword:'', address1: '', address2:'', userCity:'', userState:'', zipCode:''}}
 				validationSchema={validationSchema}
@@ -106,16 +182,31 @@ class SignUpForm extends React.Component{
 					
 					setSubmitting(false);
 					console.log(values);
-					//const data = new FormData();
-					//data.append('myValues', (values));
 					axios.post('http://localhost:3001/newUser',values)
 						.then(response=>{
-							console.log(response);
+							if(response.data ==="Duplicate emails"){
+								this.setState({
+									displayAlert : true,
+									success : false,
+									modalShow: true
+								});
+								
+								console.log("Duplicate emails", this.state.displayAlert, this.state.success);
+							}
+							else if(response.data ==="Successfully inserted!"){
+								this.setState({
+									displayAlert: true,
+									success: true,
+									modalShow: true
+								});
+								resetForm(true);
+								console.log("Different emails", this.state.displayAlert, this.state.success);
+							}
 						})
 						.catch(error =>{
 							console.log(error);
 						})
-					}, 400);
+					}, 500);
 				}}
 				>
 				{({
@@ -288,8 +379,12 @@ class SignUpForm extends React.Component{
 					    SignUp
 					  </Button>
 					</Form>
+					
 				)}
+				
 				</Formik>
+				
+				</div>
         )
     }
 }
