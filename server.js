@@ -46,8 +46,6 @@ app.post("/newUser", function(req,res){
         res.status("200").send(responseText);
     }
   });
-    res.json(req.body)      
-  });
  
   app.get('/populateFields', function (req, res) {
     var obj = {};
