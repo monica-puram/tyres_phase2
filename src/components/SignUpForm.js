@@ -3,9 +3,7 @@ import {Form, Button,Col, Modal} from 'react-bootstrap';
 import { Formik} from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-//import SignUpAlert from './SignUpAlert';
 import ModalComponent from './ModalComponent';
-import SignUpAlert from './SignUpAlert';
 import '../css/signUp.css';
 
 class SignUpForm extends React.Component{
@@ -78,7 +76,7 @@ class SignUpForm extends React.Component{
 	componentDidMount() {
 		axios.get('http://localhost:3001/populateStates')
 		.then(response => {
-			if(response.data != null || response.data != undefined) {
+			if(response.data !== null || response.data !== undefined) {
 				console.log("StatesList from Server: ",response.data);
 				var stateList = response.data.map(a => a.state_name);
 				   stateList.forEach(state => {
@@ -133,7 +131,7 @@ class SignUpForm extends React.Component{
 								<Modal.Body>
 								
 								<p>
-									Registered successfully
+									Registered successfully. Verification link sent to your registered email address, please verify.
 								</p>
 								</Modal.Body>
 								<Modal.Footer>
@@ -314,8 +312,8 @@ class SignUpForm extends React.Component{
 							type = "text"
 							placeholder="City"
 							value = {document.querySelector("#formGridCity") != null ? (
-								(document.querySelector("#formGridCity").value == "" || document.querySelector("#formGridCity").value == null) ?  (
-									document.querySelector("#formGridCity").parentElement.nextElementSibling.nextElementSibling.lastChild.value == "" ? 
+								(document.querySelector("#formGridCity").value === "" || document.querySelector("#formGridCity").value == null) ?  (
+									document.querySelector("#formGridCity").parentElement.nextElementSibling.nextElementSibling.lastChild.value === "" ? 
 									values.userCity: this.state.userCity) : this.state.userCity) : 
 								values.userCity}
 							
@@ -333,8 +331,8 @@ class SignUpForm extends React.Component{
 						  <Form.Control className="userState"
 						   as="select"
 						   value = {document.querySelector("#formGridState") != null ? (
-							(document.querySelector("#formGridState").value == "" || document.querySelector("#formGridState").value == null) ?  (
-								document.querySelector("#formGridState").parentElement.nextElementSibling.lastChild.value == "" ? 
+							(document.querySelector("#formGridState").value === "" || document.querySelector("#formGridState").value == null) ?  (
+								document.querySelector("#formGridState").parentElement.nextElementSibling.lastChild.value === "" ? 
 								values.userState : this.state.userState) : this.state.userState) : 
 							values.userState}
 						    name = "userState"

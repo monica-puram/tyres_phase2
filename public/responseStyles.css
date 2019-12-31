@@ -1,0 +1,13 @@
+.responseBody{
+    text-align: center;
+}
+.responseContent {
+    text-align: center;
+    margin: 50px;
+}
+.successResponse {
+    color: green; 
+}
+.failResponse {
+    color: red; 
+}

@@ -16,7 +16,6 @@ class HeaderNav extends React.Component{
 
 	handleSearch(e) {
 		console.log("HandleSearch Event : ",e);
-		let searchText = e.target.parentNode.previousElementSibling.value;
 	}
 
 	render() { 

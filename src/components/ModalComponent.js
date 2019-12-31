@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import '../css/signUp.css';
-
   
   class ModalComponent extends React.Component {
       constructor(props){
@@ -26,9 +25,5 @@ import '../css/signUp.css';
       
     
   }
-  
-  //render(<ModalComponent />);
 
   export default ModalComponent;
-
-  

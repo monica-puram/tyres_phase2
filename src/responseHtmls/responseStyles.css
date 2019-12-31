@@ -1,0 +1,11 @@
+.responseContent {
+    color: red;
+    text-align: center;
+    margin: 50px;
+}
+.successResponse {
+    color: greenyellow; 
+}
+.failResponse {
+    color: red; 
+}
