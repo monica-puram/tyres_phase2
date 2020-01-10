@@ -6,7 +6,6 @@ import Footer from './components/Footer';
 class Products extends React.Component{
 	render()
 	{
-		console.log(JSON.stringify(this.props));
 		return(
 			<React.Fragment>
 				<HeaderNav/>

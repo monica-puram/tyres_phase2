@@ -1,5 +1,6 @@
 import React from 'react';
 import Rating from 'react-rating';
+import {IoIosStarOutline, IoIosStar} from 'react-icons/io';
 
 class RatingFilter extends React.Component{
 	constructor(props){
@@ -20,8 +21,8 @@ class RatingFilter extends React.Component{
 			<div className = "ratingFilter">
 				<p>Select Rating:</p>
 				<Rating initialRating={this.state.rating}
-						emptySymbol="glyphicon glyphicon-star-empty"
-  						fullSymbol="glyphicon glyphicon-star"
+						emptySymbol={<IoIosStarOutline/>}
+  						fullSymbol={<IoIosStar/>}
   						onClick = {this.handleRatingChange}
   						style = {{"color": "orange"}}/>
 			</div>

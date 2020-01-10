@@ -6,12 +6,13 @@ import Products from './Products';
 import ContactUs from './ContactUs';
 import Login from './Login';
 import SignUp from './SignUp';
+import Logout from './Logout';
 
 class App extends React.Component{
   render(){
     return(
         <React.Fragment>
-            <StaticRouter basename = "LibraryProj">
+            <StaticRouter>
               <Switch>              
                 <Route exact path = '/' component = {Home}/>
                 <Route path = '/about' component = {About}/>
@@ -19,6 +20,7 @@ class App extends React.Component{
                 <Route path = '/products/:category' component = {Products}/>
                 <Route path = '/contactUs' component = {ContactUs}/>
                 <Route path = '/login' component = {Login}/>
+                <Route path = '/logout' component = {Logout}/>
                 <Route path = '/signup' component = {SignUp}/>
                 <Route path = '/Home' component = {Home}/>
               </Switch>

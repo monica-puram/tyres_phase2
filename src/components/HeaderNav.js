@@ -9,7 +9,7 @@ class HeaderNav extends React.Component{
 	constructor(props) {
 		super(props);
 		this.state={
-
+			loginToken: sessionStorage.loginToken
 		};
 		this.handleSearch = this.handleSearch.bind(this);
 	}
@@ -42,7 +42,15 @@ class HeaderNav extends React.Component{
 								</Dropdown>
 								<Nav.Link href="/About">About</Nav.Link>
 								<Nav.Link href="/ContactUs">Contact Us</Nav.Link>
-								<Nav.Link href = "/login">Login/Sign Up</Nav.Link>
+								{sessionStorage.loginToken == null ?
+									<Nav.Link href = "/login">Login/Sign Up</Nav.Link>
+									:
+									<React.Fragment>  
+										<Nav.Link href = "#">Hi, {sessionStorage.userName}</Nav.Link>
+										<Nav.Link href = "/logout">Logout</Nav.Link>
+									</React.Fragment>
+								}
+
 							</Nav>
 							</Navbar.Collapse>
 						</Col>

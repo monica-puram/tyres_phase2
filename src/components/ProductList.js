@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Button } from 'react-bootstrap';
 import Rating from 'react-rating';
 import ProductsPagination from './ProductsPagination';
+import {IoIosStarOutline, IoIosStar} from 'react-icons/io';
 
 class ProductList extends React.Component {
 	constructor(props) {
@@ -21,7 +22,6 @@ class ProductList extends React.Component {
 			}
 			)
 			.then((result) => {
-				console.log(result);
 				this.setState({
 					productList: result
 				})
@@ -35,8 +35,6 @@ class ProductList extends React.Component {
 
 		//Category
 		const category = this.props.category;
-		console.log(category);
-
 		const price = this.props.price;
 		const rating = this.props.rating;
 		let totalPosts = 0;
@@ -84,8 +82,8 @@ class ProductList extends React.Component {
 										</Card.Text>
 										<Rating initialRating={item.rating}
 											readonly
-											emptySymbol="glyphicon glyphicon-star-empty"
-											fullSymbol="glyphicon glyphicon-star"
+											emptySymbol={<IoIosStarOutline/>}
+											fullSymbol={<IoIosStar/>}
 											style={{ "color": "orange" }} />
 										<Button variant="success">Add to cart</Button>
 									</Card.Body>
