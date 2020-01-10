@@ -173,7 +173,7 @@ class SignUpForm extends React.Component{
 					setTimeout(() => {
 					
 					setSubmitting(false);
-					console.log(values);
+					console.log('Signup values: ',values);
 					axios.post('http://localhost:3001/newUser',values)
 						.then(response=>{
 							if(response.data ==="Duplicate emails"){
