@@ -6,11 +6,18 @@ var crypto = require("crypto");
 var nodemailer = require('nodemailer');
 var fs = require('fs');
 var bcrypt = require('bcrypt');
+var path = require('path');
+var mongoose = require('mongoose');
+var GridFdStorage = require('multer-gridfs-storage');
+var Grid = require('gridfs-stream');
+var methodOverride = require('method-override');
+
 const {ObjectId} = require('mongodb');
 app.use(cors());
 app.use(express.json()) // for parsing application/json
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
+var mongo = require('mongodb');
 var MongoClient = require('mongodb').MongoClient;
 app.listen(3001);
 
@@ -134,6 +141,7 @@ app.post('/signin', function (req, response) {
     if (err) throw err;
     var dbo = db.db('tyres');
     var obj = req.body;
+   
     dbo.collection('users').find({ email: obj.email }).toArray(function (err, res) {
       if (err) {
         respObj.success = false;
@@ -154,24 +162,34 @@ app.post('/signin', function (req, response) {
           sendResponse(respObj);
         }
         else{
-          const userSession = {
-            userId : user._id,
-            timeStamp: Date.now()
-          }
-          
-          dbo.collection('UserSession').insertOne(userSession,function(err, doc){
-            if (err){
+          dbo.collection('registration').findOne({ "registeredEmail": obj.email }, function(err, res){
+            if (err) throw err;
+            if(res.registeredEmail === obj.email && res.verified === "true") {
+              const userSession = {
+                userId : user._id,
+                timeStamp: Date.now()
+              }
+              
+              dbo.collection('UserSession').insertOne(userSession,function(err, doc){
+                if (err){
+                  respObj.success = false;
+                  respObj.message = "Server Error";
+                  sendResponse(respObj);
+                }
+                respObj.userName = user.firstName[0].toLocaleUpperCase() + user.firstName.substr(1, user.firstName.length).toLocaleLowerCase()
+                respObj.success = true;
+                respObj.message = "Valid Sign in";
+                respObj.tokenId = doc.ops[0]._id;
+                
+                sendResponse(respObj);
+               })
+            } else {
               respObj.success = false;
-              respObj.message = "Server Error";
+              respObj.message = "Unverified email address";
               sendResponse(respObj);
             }
-            respObj.userName = user.firstName[0].toLocaleUpperCase() + user.firstName.substr(1, user.firstName.length).toLocaleLowerCase()
-            respObj.success = true;
-            respObj.message = "Valid Sign in";
-            respObj.tokenId = doc.ops[0]._id;
-            
-            sendResponse(respObj);
-           })
+          })
+          
         }
     }
   })
@@ -271,4 +289,22 @@ app.get('/verification', function (req, response) {
 
   });
 
+})
+
+app.get('/gridData', function(req, res) {
+  var conn = mongoose.createConnection('mongodb://localhost:27017/tyres');
+  conn.once('open', function() {
+    conn.collection('registration');
+    var gfs = Grid(conn.db, mongoose.mongo);
+    //gfs.collection('fs.files');
+    console.log("GFS : ", gfs.collection('registration'));
+    //gfs.files.find().toArray(function(err, files) {
+      //if(!files || files.length === 0) {
+        //res.status(404).json({
+          //err: 'No files exists'
+        //});
+        //return res.json(files);
+      //}
+    //})
+  })
 })
